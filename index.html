@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<title>transliterace УКР-CZE / CZE-УКР транслітерація</title>
+<meta name="description" content="Transliterace českého textu z/do ukrajinské cyrilice / Транслітерація чеського тексту українською кирилицею">
+  <meta name="author" content="Vaclav Sistek">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#x1F1FA;&#x1F1E6;</text></svg>">
+<style>
+html, body {
+  width: 100%;
+  height: 100%;
+  height: -webkit-fill-available;
+  min-height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  min-height: -webkit-fill-available;
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  background-color: white;
+  overflow: hidden;
+  font-family: 'Fira Sans Condensed', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+a:hover {
+  color: blue;
+}
+a.active {
+  color: black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#info {
+  font-size: 80%;
+  cursor: pointer;
+  position: fixed;
+  text-align: right;
+  top: 0.2em;
+  right: 0.5em;
+  z-index: 2;
+}
+
+#infoBox {
+  background-color: white;
+  border-radius: 0.5em;
+  padding: 1em;
+  padding-top: 1em;
+  color: black;
+  position: fixed;
+  margin: 1em;
+  top: 1.5em;
+  right: 0em;
+  z-index: 2;
+  display: none;
+  max-width: 100%;
+  box-shadow: -0.05em -0.05em black, 0.05em 0.05em black, 0 0 0.3em black;
+}
+#closeButton {
+  cursor: pointer;
+  position: absolute;
+  right: 0.3em;
+  top: 0;
+  font-size: 200%;
+  z-index: 3;
+}
+
+#topBanner {
+  height: 15vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+
+#title {
+  font-size: 2vh;
+  line-height: 0.8;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  vertical-align: top;
+  position: absolute;
+  top: 0.8em;
+}
+
+#direction {
+  cursor: ew-resize;
+  font-size: 7vh;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  vertical-align: bottom;
+  position: absolute;
+  bottom: 0;
+}
+
+#container {
+  min-height: 100%;
+}
+
+#container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+#source {
+  float: left;
+  padding: .5em;
+  font-family: 'Fira Sans Condensed', sans-serif;
+  font-size: 1.5em;
+  width: 50%;
+  resize: none;
+  height: 85vh;
+  border-style: solid;
+  border-width: 2px 1px 2px 2px;
+  border-color: silver;
+  position: absolute;
+  top: 15vh;
+  left: 0;
+}
+
+#source:focus {
+  outline: none !important;
+  border-width: 2px;
+  border-color: SteelBlue;
+}
+
+#target {
+  float: left;
+  padding: .5em;
+  font-family: 'Fira Sans Condensed', sans-serif;
+  font-size: 1.5em;
+  width: 50%;
+  background: WhiteSmoke;
+  resize: none;
+  height: 85vh;
+  border-style: solid;
+  border-width: 2px 2px 2px 1px;
+  border-color: silver;
+  position: absolute;
+  top: 15vh;
+  right: 0;
+}
+
+#target:focus {
+  outline: none !important;
+  border-color: SteelBlue;
+}
+
+#copyButton {
+  font-size: 200%;
+  cursor: pointer;
+  position: fixed;
+  text-align: right;
+  bottom: 0.2em;
+  right: 0.5em;
+  z-index: 2;
+}
+</style>
+</head>
+
+<body>
+<div id="topBanner">
+<div id="info" onclick="toggleInfoBox()">
+&#x2139;&#xFE0F; info / інфо
+</div>
+<div id="infoBox">
+  <div id="closeButton" onclick="toggleInfoBox()">
+    &times;
+  </div>
+<p>&#x1F1E8;&#x1F1FF; Tento nástroj má sloužit jako pomůcka pro lidi, kteří primárně čtou v ukrajinské cyrilici, a potřebují usnadnit plynulé čtení textu v češtině.
+Nejedná se o transliteraci podle ISO 9 (úřední, mezinárodní), ale vyladěnou pro češtinu. Základem je norma DIN 1460:1982 a podněty korektorů. Nově je přidána i transliterace opačným směrem, která má sloužit jako pomůcka při učení latinky.</p>
+
+<p>&#x1F1FA;&#x1F1E6; Цей інструмент призначений для допомоги людям, які читають переважно українською кирилицею і яким потрібно сприяти безперебійному читанню тексту чеською.
+Це не транслітерація за ISO 9 (офіційна, міжнародна), а налаштована на чеську. Основою є стандарт DIN 1460: 1982 і пропозиції коректорів. Також була додана транслітерація у протилежному напрямку, яка має служити підмогою у вивченні чеського алфавіту.</p>
+<p><a href="https://vsistek.eu/">Václav Šístek</a> &copy; 2022; Dostupné na <a href="https://github.com/vsistek/ua-translit-cz">GitHub</a> pod MIT licencí.</p>
+</div>
+<span id="title">směr transliterace:<br/>напрямок транслітерації:</span>
+<span id="direction" onclick="flipDirection()">CZE&#x1F1E8;&#x1F1FF; &#10140; &#x1F1FA;&#x1F1E6;УКР</span>
+</div>
+<div id="container">
+<textarea id="source" onkeyup="translit()" oninput="translit()" onfocusin="clearOnce()" onfocusout="resetIfBlank()" contenteditable>
+</textarea>
+<textarea id="target" readonly>
+Povolte javascript
+</textarea>
+<div id="copyButton" title="Kopírovat do schránky / Копіювати в буфер обміну" onclick="copyToClipboard()">
+  &#x2398
+</div>
+</div>
+<script>
+const cz2ua = [
+['je', 'є'], ['JE', 'Є'], ['Je', 'Є'],
+['ch', 'х'], ['CH', 'Х'], ['Ch', 'Х'],
+['šč', 'щ'], ['ŠČ', 'Щ'], ['Šč', 'Щ'],
+['ju', 'ю'], ['JU', 'Ю'], ['Ju', 'Ю'],
+['ja', 'я'], ['JA', 'Я'], ['Ja', 'Я'],
+['rž', "р'ж"], ['ŘŽ', "Р'Ж"], ['Rž', "Р'ж"],
+['rš', "р'ш"], ['ŘŠ', "Р'Ш"], ['Rš', "Р'ш"],
+['a', 'а'], ['A', 'А'],
+['b', 'б'], ['B', 'Б'],
+['v', 'в'], ['V', 'В'],
+['h', 'г'], ['H', 'Г'],
+['g', 'ґ'], ['G', 'Ґ'], 
+['d', 'д'], ['D', 'Д'],
+['e', 'е'], ['E', 'Е'],
+['ž', 'ж'], ['Ž', 'Ж'],
+['z', 'з'], ['Z', 'З'],
+['y', 'и'], ['Y', 'И'],
+['i', 'і'], ['I', 'І'],
+['j', 'й'], ['J', 'Й'],
+['k', 'к'], ['K', 'К'],
+['l', 'л'], ['L', 'Л'],
+['m', 'м'], ['M', 'М'], 
+['n', 'н'], ['N', 'Н'],
+['o', 'о'], ['O', 'О'],
+['p', 'п'], ['P', 'П'],
+['r', 'р'], ['R', 'Р'],
+['s', 'с'], ['S', 'С'], 
+['t', 'т'], ['T', 'Т'],
+['u', 'у'], ['U', 'У'],
+['f', 'ф'], ['F', 'Ф'],
+['c', 'ц'], ['C', 'Ц'],
+['č', 'ч'], ['Č', 'Ч'],
+['š', 'ш'], ['Š', 'Ш'],
+['ř', 'рж'], ['Ř', 'Рж'],
+['ď', 'дь'], ['Ď', 'Дь'],
+['ť', 'ть'], ['Ť', 'Ть'],
+['ň', 'нь'], ['Ň', 'Нь'],
+['á', 'а'], ['Á', 'А'],
+['é', 'е'], ['É', 'Е'],
+['мě', 'мнє'], ['Мě', 'Мнє'],
+['ě', 'є'], ['Ě', 'Є'],
+['í', 'і'], ['Í', 'I'],
+['ý', 'и'], ['Ý', 'И'],
+['ó', 'о'], ['Ó', 'О'],
+['ů', 'у'], ['Ů', 'У'],
+['йі', 'ї'], ['Йі', 'Ї'],
+['ньі', 'ні'], ['Ньі', 'Ні'],
+['ньа', 'ня'], ['Ньа', 'Ня'],
+['ньу', 'ню'], ['Ньу', 'Ню'],
+['дьі', 'ді'], ['Дьі', 'Ді'],
+['дьа', 'дя'], ['Дьа', 'Дя'],
+['дьу', 'дю'], ['Дьу', 'Дю'],
+['тьі', 'ті'], ['Тьі', 'Ті'],
+['тьа', 'тя'], ['Тьа', 'Тя'],
+['тьу', 'тю'], ['Тьу', 'Тю'],
+['йа', 'я'], ['ЙА', 'Я'], ['Йа', 'Я'],
+['ú', 'у'],  ['Ú', 'У'],
+['йу', 'ю'], ['ЙУ', 'Ю'], ['Йу', 'Ю'],
+['йе', 'є'], ['ЙЕ', 'Є'], ['Йе', 'Є']]
+
+const sourceDefaultcz2ua = 'Sem vložte český text\nВставте тут чеський текст';
+const targetDefaultcz2ua = 'Zde se zobrazí transliterace do ukrajinské cyrilice\nТут з’явиться транслітерація на українську кирилицю';
+
+const ua2cz = [
+['є', 'je'], ['Є', 'Je'],
+['х', 'ch'], ['Х','Ch'],
+['щ', 'šč'], ['Щ', 'Šč'],
+['ю', 'ju'], ['Ю', 'Ju'],
+['я', 'ja'], ['Я', 'Ja'],
+['а', 'a'], ['А', 'A'],
+['б', 'b'], ['Б', 'B'],
+['в', 'v'], ['В', 'V'],
+['г', 'h'], ['Г', 'H'],
+['ґ', 'g'], ['Ґ', 'G'],
+['д', 'd'], ['Д', 'D'],
+['е', 'e'], ['Е', 'E'],
+['ж', 'ž'], ['Ж', 'Ž'],
+['з', 'z'], ['З', 'Z'],
+['и', 'y'], ['И', 'Y'],
+['і', 'i'], ['І', 'I'],
+['й', 'j'], ['Й', 'J'],
+['к', 'k'], ['К', 'K'],
+['л', 'l'], ['Л', 'L'],
+['м', 'm'], ['М', 'M'],
+['н', 'n'], ['Н', 'N'],
+['о', 'o'], ['О', 'O'],
+['п', 'p'], ['П', 'P'],
+['р', 'r'], ['Р', 'R'],
+['с', 's'], ['С', 'S'],
+['т', 't'], ['Т', 'T'],
+['у', 'u'], ['У', 'U'],
+['ф', 'f'], ['Ф', 'F'],
+['ц', 'c'], ['Ц', 'C'],
+['ч', 'č'], ['Ч', 'Č'],
+['ш', 'š'], ['Ш', 'Š'],
+['dj', 'ď'], ['Dj', 'Ď'],
+['dь', 'ď'], ['Dь', 'Ď'],
+['tь', 'ť'], ['Tь', 'Ť'],
+['nь', 'ň'], ['Nь', 'Ň'],
+['sь', 's'], ['Sь', 'S'],
+['cь', 'c'], ['Cь', 'C'],
+['lь', 'l'], ['Lь', 'L'],
+['ї', 'ji'], ['Ї', 'Ji'],
+['tj', 'ť'], ['Tj', 'Ť']]
+
+const sourceDefaultua2cz = 'Sem vložte ukrajinský text\nВставте тут український текст'
+const targetDefaultua2cz = 'Zde se zobrazí transliterace do české latinky\nТут з’явиться транслітерація на чеською латиницею'
+
+dir = 'cz2ua';
+subs = cz2ua;
+sourceDefault = sourceDefaultcz2ua
+targetDefault = targetDefaultcz2ua
+
+direction  = document.getElementById('direction');
+source     = document.getElementById('source');
+target     = document.getElementById('target');
+infoBox    = document.getElementById('infoBox');
+copyButton = document.getElementById('copyButton');
+
+function flipDirection() {
+    if (dir === 'cz2ua') {
+        dir = 'ua2cz';
+        subs = ua2cz;
+        sourceDefault = sourceDefaultua2cz;
+        targetDefault = targetDefaultua2cz;
+        direction.innerHTML = 'УКР&#x1F1FA;&#x1F1E6; &#10140; &#x1F1E8;&#x1F1FF;CZE';
+    } else {
+        dir = 'cz2ua';
+        subs = cz2ua;
+        sourceDefault = sourceDefaultcz2ua;
+        targetDefault = targetDefaultcz2ua;
+        direction.innerHTML = 'CZE&#x1F1E8;&#x1F1FF; &#10140; &#x1F1FA;&#x1F1E6;УКР';
+    }
+    source.value = '';
+    resetIfBlank();
+}
+
+function translit() {
+    text = source.value;
+    for (i = 0; i < subs.length; i++) {
+        text = text.replaceAll(subs[i][0], subs[i][1])
+    }
+    target.style.color = 'black';
+    target.value = text;
+    copyButton.style.display = "block";
+}
+fresh = true;
+function clearOnce() {
+    if (fresh) {
+        source.value = '';
+        source.style.color = 'black';
+        fresh = false;
+    }
+}
+function resetIfBlank() {
+    if (source.value === '') {
+        source.style.color = 'grey';
+        source.value = sourceDefault
+        target.style.color = 'grey';
+        target.value = targetDefault
+        copyButton.style.display = "none";
+        fresh = true;
+    }
+
+}
+
+function toggleInfoBox() {
+  if (infoBox.style.display === "none") {
+    infoBox.style.display = "block";
+  } else {
+    infoBox.style.display = "none";
+  }
+}
+
+function copyToClipboard() {
+  target.select();
+  document.execCommand('copy')
+}
+
+infoBox.style.display = "none";
+resetIfBlank()
+</script>
+</body>
+</html>
